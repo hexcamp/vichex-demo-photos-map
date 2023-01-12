@@ -7,8 +7,17 @@ import {IconLayer} from '@deck.gl/layers';
 import {H3HexagonLayer} from '@deck.gl/geo-layers';
 import {schemeCategory10} from 'd3-scale-chromatic';
 import {color as d3Color} from 'd3-color';
+import { h3ToGeo } from 'h3-js';
 
 import IconClusterLayer from './icon-cluster-layer';
+
+const dataSolid = [
+  {
+    "hex": "8228d7fffffffff",
+    "count": 18.56737602222408,
+    "colorIndex": 1
+  }
+]
 
 const colors = schemeCategory10.map(colorName => {
   const { r, g, b } = d3Color(colorName).brighter()
@@ -95,9 +104,16 @@ export default function App({
   };
 
   const layerProps = {
-    data,
+    // data,
+    // getPosition: d => d.coordinates,
+    data: dataSolid,
+    getPosition: d => {
+      const latLng = h3ToGeo(d.hex)
+      console.log('Jim1', d, latLng)
+      // return latLng
+      return [latLng[1], latLng[0]]
+    },
     // pickable: true,
-    getPosition: d => d.coordinates,
     iconAtlas,
     iconMapping,
     // onHover: !hoverInfo.objects && setHoverInfo
@@ -113,14 +129,6 @@ export default function App({
         sizeScale: 2000,
         sizeMinPixels: 6
       });
-
-  const dataSolid = [
-    {
-      "hex": "8228d7fffffffff",
-      "count": 18.56737602222408,
-      "colorIndex": 1
-    }
-  ]
 
   let selectedHex
 
