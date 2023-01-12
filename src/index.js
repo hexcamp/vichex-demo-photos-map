@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {render} from 'react-dom';
-import {StaticMap} from 'react-map-gl';
+import {Map} from 'react-map-gl';
+import maplibregl from 'maplibre-gl';
 import DeckGL from '@deck.gl/react';
 import {MapView} from '@deck.gl/core';
 import {IconLayer} from '@deck.gl/layers';
@@ -8,6 +9,7 @@ import {H3HexagonLayer} from '@deck.gl/geo-layers';
 import {schemeCategory10} from 'd3-scale-chromatic';
 import {color as d3Color} from 'd3-color';
 import { h3ToGeo } from 'h3-js';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 import IconClusterLayer from './icon-cluster-layer';
 
@@ -196,7 +198,7 @@ export default function App({
       // onViewStateChange={hideTooltip}
       // onClick={expandTooltip}
     >
-      <StaticMap reuseMaps mapStyle={mapStyle} preventStyleDiffing={true} />
+      <Map mapLib={maplibregl} reuseMaps mapStyle={mapStyle} preventStyleDiffing={true} />
 
     </DeckGL>
     // {renderTooltip(hoverInfo)}
