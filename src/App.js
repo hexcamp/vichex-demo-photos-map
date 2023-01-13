@@ -8,6 +8,7 @@ import {
 import styled from 'styled-components'
 // import MVTExample from './mvt/H3HexagonMVT'
 import SimpleDeck from './SimpleDeck'
+import MVTExample from './mvt/H3HexagonMVT'
 
 const StyledList = styled.ul`
   display: flex;
@@ -30,6 +31,9 @@ const router = createHashRouter([
             <StyledItem>
               <NavLink to='/edit'>Edit</NavLink>
             </StyledItem>
+            <StyledItem>
+              <NavLink to='/simple'>Simple</NavLink>
+            </StyledItem>
           </StyledList>
         </nav>
         <>
@@ -40,44 +44,19 @@ const router = createHashRouter([
     children: [
       {
         path: '/',
-        element: <SimpleDeck />
+        element: <MVTExample />
       },
       {
         path: 'edit',
+        element: <MVTExample />
+      },
+      {
+        path: 'simple',
         element: <SimpleDeck />
       }
     ]
   }
 ])
-
-/*
-export default function App () {
-  return (
-    <Router>
-      <div>
-        <nav>
-          <StyledList>
-            <StyledItem>
-              <Link to='/'>Home</Link>
-            </StyledItem>
-            <StyledItem>
-              <Link to='/edit'>Edit</Link>
-            </StyledItem>
-          </StyledList>
-        </nav>
-        <Switch>
-          <Route path='/mvt'>
-            <SimpleDeck />
-          </Route>
-          <Route path='/'>
-            <SimpleDeck />
-          </Route>
-        </Switch>
-      </div>
-    </Router>
-  )
-}
-*/
 
 export default function App () {
   return <RouterProvider router={router} />
