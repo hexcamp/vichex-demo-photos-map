@@ -8,7 +8,6 @@ export default function (h3Index) {
   if (trimmed.length % 2 == 0) {
     trimmed += 'f'
   }
-  console.log('Jim', Buffer)
   const buf = Buffer.from(trimmed.slice(1), 'hex')
   const encoder = new base32.Encoder({ type: 'rfc4648', lc: true })
   const str = encoder.write(buf).finalize()

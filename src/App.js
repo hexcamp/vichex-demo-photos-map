@@ -6,8 +6,6 @@ import {
   NavLink
 } from 'react-router-dom'
 import styled from 'styled-components'
-// import MVTExample from './mvt/H3HexagonMVT'
-import SimpleDeck from './SimpleDeck'
 import MVTExample from './mvt/H3HexagonMVT'
 
 const StyledList = styled.ul`
@@ -31,9 +29,6 @@ const router = createHashRouter([
             <StyledItem>
               <NavLink to='/edit'>Edit</NavLink>
             </StyledItem>
-            <StyledItem>
-              <NavLink to='/simple'>Simple</NavLink>
-            </StyledItem>
           </StyledList>
         </nav>
         <>
@@ -49,10 +44,6 @@ const router = createHashRouter([
       {
         path: 'edit',
         element: <MVTExample />
-      },
-      {
-        path: 'simple',
-        element: <SimpleDeck />
       }
     ]
   }

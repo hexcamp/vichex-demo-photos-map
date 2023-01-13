@@ -8,7 +8,9 @@ import {
 import { schemeCategory10 } from 'd3-scale-chromatic'
 import { color as d3Color } from 'd3-color'
 import throttle from 'lodash.throttle'
+import { IconLayer } from '@deck.gl/layers'
 import { H3HexagonLayer, MVTLayer } from '@deck.gl/geo-layers'
+import { h3ToGeo } from 'h3-js'
 import produce from 'immer'
 import DeckGL from '@deck.gl/react'
 import hexToUrl from './hex-to-url'
@@ -17,6 +19,8 @@ import tokens from '../tokens.json'
 // Set your mapbox token here
 // const MAPBOX_TOKEN = localStorage.getItem('mapbox_token')
 const MAPBOX_TOKEN = tokens.mapbox
+const iconMapping = process.env.PUBLIC_URL + '/location-icon-mapping.json'
+const iconAtlas = process.env.PUBLIC_URL + '/location-icon-atlas.png'
 
 const ambientLight = new AmbientLight({
   color: [255, 255, 255],
@@ -67,7 +71,7 @@ const elevationScale = { min: 1, max: 50 }
 function UpdateViewState ({ updateViewState, viewState }) {
   useEffect(() => {
     updateViewState(viewState)
-  }, [ updateViewState, viewState ])
+  }, [updateViewState, viewState])
   return null
 }
 
@@ -105,96 +109,119 @@ export default class H3HexagonView extends Component {
       viewState: { zoom }
     } = this.state
 
-    return [
-      new MVTLayer({
-        data: `https://a.tiles.mapbox.com/v4/mapbox.mapbox-streets-v7/{z}/{x}/{y}.vector.pbf?access_token=${MAPBOX_TOKEN}`,
-        // data: `http://localhost:5000/satellite-lowres/{z}/{x}/{y}.pbf`,
-        // data: `http://localhost:5000/canary/{z}/{x}/{y}.pbf`,
-        // data: `http://tile.stamen.com/toner/{z}/{x}/{y}.png`,
-        // data: `http://localhost:5000/world_countries/{z}/{x}/{y}.pbf`,
-        // data: `http://localhost:5000/states_provinces/{z}/{x}/{y}.pbf`,
-        // data: `http://localhost:7000/ne_10m_admin_1_states_provinces.mbtiles/{z}/{x}/{y}.pbf`,
-        // data: `http://localhost:5000/states_provinces_unzipped/{z}/{x}/{y}.pbf`,
-        // data: `https://ipfs.io/ipfs/bafybeigyfjxrsxrlt2emeyvm3gihb7wvkbcqiel7xfa37yf4o4me6phua4/states_provinces/{z}/{x}/{y}.pbf`,
-        // data: `https://ipfs.io/ipfs/QmUefFZttPf9xq4KTkk94rBbZEVrBsTreDi4JA8KYhQFX6/{z}/{x}/{y}`, // IPFS Demo
+    const layerProps = {
+      data: dataSolid,
+      getPosition: d => {
+        const latLng = h3ToGeo(d.hex)
+        return [latLng[1], latLng[0]]
+      },
+      // pickable: true,
+      iconAtlas,
+      iconMapping
+      // onHover: !hoverInfo.objects && setHoverInfo
+    }
 
-        minZoom: 0,
-        maxZoom: 23, // MapBox
-        // maxZoom: 5, // states_provinces
-        // maxZoom: 9, // IPFS Demo
-        getLineColor: [192, 192, 192],
-        // getFillColor: [100, 130, 140],
-        getFillColor: [40, 40, 40],
-        getLineWidth: 1,
-        lineWidthMinPixels: 1,
-      }),
-      new H3HexagonLayer({
-        id: 'h3-hexagon-layer-solid',
-        data: dataSolid,
-        pickable: true,
-        autoHighlight: true,
-        highlightColor: [255, 255, 255, 100],
-        wireframe: false,
-        filled: true,
-        extruded: false,
-        material,
-        elevationScale: zoom ? 5.0 + 30.0 * (10.0 / zoom) : 5,
-        getHexagon: d => d.hex,
-        // getFillColor: d => {
-        getLineWidth: 3,
-        getFillColor: d => {
-          if (
-            selectedHex &&
-            selectedHex[0] === 'solid' &&
-            d.hex === selectedHex[1]
-          ) {
-            return [255, 255, 255]
-          } else {
-            const color = colors[d.colorIndex]
-            return [color[0], color[1], color[2], 100]
-          }
-        },
-        getLineColor: d => {
-          if (
-            selectedHex &&
-            selectedHex[0] === 'solid' &&
-            d.hex === selectedHex[1]
-          ) {
-            return [255, 255, 255]
-          } else {
-            return colors[d.colorIndex]
-          }
-        },
-        lineWidthMinPixels: 1,
-        getElevation: d => {
-          if (
-            selectedHex &&
-            selectedHex[0] === 'solid' &&
-            d.hex === selectedHex[1]
-          ) {
-            return d.count * 1.5
-          } else {
-            return d.count
-          }
-        },
-        updateTriggers: {
-          getFillColor: [selectedHex],
-          getElevation: [selectedHex]
-        },
-        onHover: info => {
-          this._setTooltip(
-            info.object && info.object.hex ? hexToUrl(info.object.hex) : '',
-            info.x,
-            info.y)
-        },
-        onClick: info => {
-          if (info && info.object) {
-            pickHex('solid', info.object.hex)
-            return true
-          }
+    const iconLayer = new IconLayer({
+      ...layerProps,
+      id: 'icon',
+      getIcon: d => 'marker',
+      sizeUnits: 'meters',
+      sizeScale: 600,
+      sizeMinPixels: 6
+    })
+
+    const mvtLayer = new MVTLayer({
+      data: `https://a.tiles.mapbox.com/v4/mapbox.mapbox-streets-v7/{z}/{x}/{y}.vector.pbf?access_token=${MAPBOX_TOKEN}`,
+      // data: `http://localhost:5000/satellite-lowres/{z}/{x}/{y}.pbf`,
+      // data: `http://localhost:5000/canary/{z}/{x}/{y}.pbf`,
+      // data: `http://tile.stamen.com/toner/{z}/{x}/{y}.png`,
+      // data: `http://localhost:5000/world_countries/{z}/{x}/{y}.pbf`,
+      // data: `http://localhost:5000/states_provinces/{z}/{x}/{y}.pbf`,
+      // data: `http://localhost:7000/ne_10m_admin_1_states_provinces.mbtiles/{z}/{x}/{y}.pbf`,
+      // data: `http://localhost:5000/states_provinces_unzipped/{z}/{x}/{y}.pbf`,
+      // data: `https://ipfs.io/ipfs/bafybeigyfjxrsxrlt2emeyvm3gihb7wvkbcqiel7xfa37yf4o4me6phua4/states_provinces/{z}/{x}/{y}.pbf`,
+      // data: `https://ipfs.io/ipfs/QmUefFZttPf9xq4KTkk94rBbZEVrBsTreDi4JA8KYhQFX6/{z}/{x}/{y}`, // IPFS Demo
+
+      minZoom: 0,
+      maxZoom: 23, // MapBox
+      // maxZoom: 5, // states_provinces
+      // maxZoom: 9, // IPFS Demo
+      getLineColor: [192, 192, 192],
+      // getFillColor: [100, 130, 140],
+      getFillColor: [40, 40, 40],
+      getLineWidth: 1,
+      lineWidthMinPixels: 1
+    })
+
+    const hexLayer = new H3HexagonLayer({
+      id: 'h3-hexagon-layer-solid',
+      data: dataSolid,
+      pickable: true,
+      autoHighlight: true,
+      highlightColor: [255, 255, 255, 100],
+      wireframe: false,
+      filled: true,
+      extruded: false,
+      material,
+      elevationScale: zoom ? 5.0 + 30.0 * (10.0 / zoom) : 5,
+      getHexagon: d => d.hex,
+      // getFillColor: d => {
+      getLineWidth: 3,
+      getFillColor: d => {
+        if (
+          selectedHex &&
+          selectedHex[0] === 'solid' &&
+          d.hex === selectedHex[1]
+        ) {
+          return [255, 255, 255]
+        } else {
+          const color = colors[d.colorIndex]
+          return [color[0], color[1], color[2], 100]
         }
-      }),
-    ]
+      },
+      getLineColor: d => {
+        if (
+          selectedHex &&
+          selectedHex[0] === 'solid' &&
+          d.hex === selectedHex[1]
+        ) {
+          return [255, 255, 255]
+        } else {
+          return colors[d.colorIndex]
+        }
+      },
+      lineWidthMinPixels: 1,
+      getElevation: d => {
+        if (
+          selectedHex &&
+          selectedHex[0] === 'solid' &&
+          d.hex === selectedHex[1]
+        ) {
+          return d.count * 1.5
+        } else {
+          return d.count
+        }
+      },
+      updateTriggers: {
+        getFillColor: [selectedHex],
+        getElevation: [selectedHex]
+      },
+      onHover: info => {
+        this._setTooltip(
+          info.object && info.object.hex ? hexToUrl(info.object.hex) : '',
+          info.x,
+          info.y
+        )
+      },
+      onClick: info => {
+        if (info && info.object) {
+          pickHex('solid', info.object.hex)
+          return true
+        }
+      }
+    })
+
+    return [mvtLayer, hexLayer, iconLayer]
   }
 
   _updateViewState (viewState) {
