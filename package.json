@@ -1,7 +1,7 @@
 {
-  "name": "peerhex-playground",
+  "name": "hexcamp-simple-map",
   "version": "0.0.1",
-  "description": "Experimenting with many little libraries",
+  "description": "Displays hexagons with *.hex.camp links",
   "private": true,
   "author": "Jim Pick (@jimpick)",
   "license": "(Apache-2.0 AND MIT)",

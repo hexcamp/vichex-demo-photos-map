@@ -1,0 +1,41 @@
+{
+  "viewState": {
+    "latitude": 48.457518769136485,
+    "longitude": -123.40784847252989,
+    "zoom": 17.014633278264917,
+    "pitch": 0,
+    "bearing": 0,
+    "maxZoom": 20,
+    "minZoom": 1,
+    "width": 850,
+    "height": 967,
+    "altitude": 1.5,
+    "maxPitch": 60,
+    "minPitch": 0,
+    "transitionDuration": 0
+  },
+  "solid": [
+    {
+      "hex": "8b28d1a1ad74fff",
+      "count": 1.993562262564005,
+      "colorIndex": 3
+    },
+    {
+      "hex": "8b28d1a12201fff",
+      "count": 1.993562262564005,
+      "colorIndex": 4
+    },
+    {
+      "hex": "8d28d1af4c0d2ff",
+      "count": 0.963468653442753,
+      "colorIndex": 3
+    },
+    {
+      "hex": "8c28d1a0e9b27ff",
+      "count": 1.446159084497559,
+      "colorIndex": 3
+    }
+  ],
+  "clear": [],
+  "dark": []
+}
