@@ -1,23 +1,23 @@
-import React, {useState} from 'react';
-import {render} from 'react-dom';
-import {Map} from 'react-map-gl';
-import maplibregl from 'maplibre-gl';
-import DeckGL from '@deck.gl/react';
-import {MapView} from '@deck.gl/core';
-import {IconLayer} from '@deck.gl/layers';
-import {H3HexagonLayer} from '@deck.gl/geo-layers';
-import {schemeCategory10} from 'd3-scale-chromatic';
-import {color as d3Color} from 'd3-color';
-import { h3ToGeo } from 'h3-js';
-import 'maplibre-gl/dist/maplibre-gl.css';
+import React, { useState } from 'react'
+import { render } from 'react-dom'
+import { Map } from 'react-map-gl'
+import maplibregl from 'maplibre-gl'
+import DeckGL from '@deck.gl/react'
+import { MapView } from '@deck.gl/core'
+import { IconLayer } from '@deck.gl/layers'
+import { H3HexagonLayer } from '@deck.gl/geo-layers'
+import { schemeCategory10 } from 'd3-scale-chromatic'
+import { color as d3Color } from 'd3-color'
+import { h3ToGeo } from 'h3-js'
+import 'maplibre-gl/dist/maplibre-gl.css'
 
-import IconClusterLayer from './icon-cluster-layer';
+import IconClusterLayer from './icon-cluster-layer'
 
 const dataSolid = [
   {
-    "hex": "8228d7fffffffff",
-    "count": 18.56737602222408,
-    "colorIndex": 1
+    hex: '8228d7fffffffff',
+    count: 18.56737602222408,
+    colorIndex: 1
   }
 ]
 
@@ -35,9 +35,9 @@ const material = {
 
 // Source data CSV
 const DATA_URL =
-  'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/icon/meteorites.json'; // eslint-disable-line
+  'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/icon/meteorites.json' // eslint-disable-line
 
-const MAP_VIEW = new MapView({repeat: true});
+const MAP_VIEW = new MapView({ repeat: true })
 const INITIAL_VIEW_STATE = {
   longitude: -35,
   latitude: 36.7,
@@ -45,17 +45,18 @@ const INITIAL_VIEW_STATE = {
   maxZoom: 20,
   pitch: 0,
   bearing: 0
-};
+}
 
-const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json';
+const MAP_STYLE =
+  'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json'
 
-function renderTooltip(info) {
-  const {object, x, y} = info;
+function renderTooltip (info) {
+  const { object, x, y } = info
 
   if (info.objects) {
     return (
-      <div className="tooltip interactive" style={{left: x, top: y}}>
-        {info.objects.map(({name, year, mass, class: meteorClass}) => {
+      <div className='tooltip interactive' style={{ left: x, top: y }}>
+        {info.objects.map(({ name, year, mass, class: meteorClass }) => {
           return (
             <div key={name}>
               <h5>{name}</h5>
@@ -63,47 +64,47 @@ function renderTooltip(info) {
               <div>Class: {meteorClass}</div>
               <div>Mass: {mass}g</div>
             </div>
-          );
+          )
         })}
       </div>
-    );
+    )
   }
 
   if (!object) {
-    return null;
+    return null
   }
 
   return object.cluster ? (
-    <div className="tooltip" style={{left: x, top: y}}>
+    <div className='tooltip' style={{ left: x, top: y }}>
       {object.point_count} records
     </div>
   ) : (
-    <div className="tooltip" style={{left: x, top: y}}>
+    <div className='tooltip' style={{ left: x, top: y }}>
       {object.name} {object.year ? `(${object.year})` : ''}
     </div>
-  );
+  )
 }
 
 /* eslint-disable react/no-deprecated */
-export default function App({
+export default function App ({
   data = DATA_URL,
   iconMapping = process.env.PUBLIC_URL + '/location-icon-mapping.json',
   iconAtlas = process.env.PUBLIC_URL + '/location-icon-atlas.png',
   showCluster = false,
   mapStyle = MAP_STYLE
 }) {
-  const [hoverInfo, setHoverInfo] = useState({});
+  const [hoverInfo, setHoverInfo] = useState({})
 
   const hideTooltip = () => {
-    setHoverInfo({});
-  };
+    setHoverInfo({})
+  }
   const expandTooltip = info => {
     if (info.picked && showCluster) {
-      setHoverInfo(info);
+      setHoverInfo(info)
     } else {
-      setHoverInfo({});
+      setHoverInfo({})
     }
-  };
+  }
 
   const layerProps = {
     // data,
@@ -117,12 +118,12 @@ export default function App({
     },
     // pickable: true,
     iconAtlas,
-    iconMapping,
+    iconMapping
     // onHover: !hoverInfo.objects && setHoverInfo
-  };
+  }
 
   const layer = showCluster
-    ? new IconClusterLayer({...layerProps, id: 'icon-cluster', sizeScale: 40})
+    ? new IconClusterLayer({ ...layerProps, id: 'icon-cluster', sizeScale: 40 })
     : new IconLayer({
         ...layerProps,
         id: 'icon',
@@ -130,7 +131,7 @@ export default function App({
         sizeUnits: 'meters',
         sizeScale: 2000,
         sizeMinPixels: 6
-      });
+      })
 
   let selectedHex
 
@@ -186,7 +187,7 @@ export default function App({
     updateTriggers: {
       getFillColor: [selectedHex],
       getElevation: [selectedHex]
-    },
+    }
   })
 
   return (
@@ -194,15 +195,19 @@ export default function App({
       layers={[layer, hexLayer]}
       views={MAP_VIEW}
       initialViewState={INITIAL_VIEW_STATE}
-      controller={{dragRotate: false}}
+      controller={{ dragRotate: false }}
       // onViewStateChange={hideTooltip}
       // onClick={expandTooltip}
     >
-      <Map mapLib={maplibregl} reuseMaps mapStyle={mapStyle} preventStyleDiffing={true} />
-
+      <Map
+        mapLib={maplibregl}
+        reuseMaps
+        mapStyle={mapStyle}
+        preventStyleDiffing={true}
+      />
     </DeckGL>
     // {renderTooltip(hoverInfo)}
-  );
+  )
 }
 
 render(<App />, document.getElementById('root'))
