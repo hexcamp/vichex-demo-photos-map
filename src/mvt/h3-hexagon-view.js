@@ -15,6 +15,7 @@ import produce from 'immer'
 import DeckGL from '@deck.gl/react'
 import hexToUrl from './hex-to-url'
 import tokens from '../tokens.json'
+import IconClusterLayer from './icon-cluster-layer';
 
 // Set your mapbox token here
 // const MAPBOX_TOKEN = localStorage.getItem('mapbox_token')
@@ -121,6 +122,12 @@ export default class H3HexagonView extends Component {
       // onHover: !hoverInfo.objects && setHoverInfo
     }
 
+    const iconClusterLayer = new IconClusterLayer({
+      ...layerProps,
+      id: 'icon-cluster',
+      sizeScale: 40
+    })
+
     const iconLayer = new IconLayer({
       ...layerProps,
       id: 'icon',
@@ -221,7 +228,8 @@ export default class H3HexagonView extends Component {
       }
     })
 
-    return [mvtLayer, hexLayer, iconLayer]
+    // return [mvtLayer, hexLayer, iconLayer]
+    return [mvtLayer, hexLayer, iconClusterLayer]
   }
 
   _updateViewState (viewState) {
