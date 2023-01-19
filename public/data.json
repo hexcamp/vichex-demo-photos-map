@@ -18,22 +18,30 @@
     {
       "hex": "8b28d1a1ad74fff",
       "count": 1.993562262564005,
-      "colorIndex": 3
+      "colorIndex": 3,
+      "type": "Photos",
+      "label": "Highrock Cairn Park"
     },
     {
       "hex": "8b28d1a12201fff",
       "count": 1.993562262564005,
-      "colorIndex": 4
+      "colorIndex": 4,
+      "type": "Photos",
+      "label": "Beacon Hill Park"
     },
     {
       "hex": "8d28d1af4c0d2ff",
       "count": 0.963468653442753,
-      "colorIndex": 3
+      "colorIndex": 3,
+      "type": "Zoomable Map",
+      "label": "Victoria Area Photos"
     },
     {
       "hex": "8c28d1a0e9b27ff",
       "count": 1.446159084497559,
-      "colorIndex": 3
+      "colorIndex": 3,
+      "type": "Photos",
+      "label": "Albert Head Lagoon"
     }
   ],
   "clear": [],

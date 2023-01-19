@@ -21,6 +21,7 @@ const secretHex =
 export default function H3HexagonMVT () {
   const [resolution, setResolution] = useState(7)
   const [dataSolid, setDataSolid] = useState([])
+  const [dataIndex, setDataIndex] = useState(new Map())
   const [nextColor, setNextColor] = useState(0)
   const location = useLocation()
   const [initialViewState, setInitialViewState] = useState({
@@ -29,7 +30,7 @@ export default function H3HexagonMVT () {
     minZoom: 1
   })
   const [viewState, setViewState] = useState({})
-  const [dataLayer, setDataLayer] = useState('solid')
+  const dataLayer = 'solid'
   const [selectedHex, setSelectedHex] = useState()
   const selectedHexBase32 = useMemo(
     () => (selectedHex ? hexToUrl(selectedHex[1]) : ''),
@@ -51,7 +52,6 @@ export default function H3HexagonMVT () {
   }, [selectedHex])
 
   useEffect(() => {
-    console.log('Jim location', location)
     const key = location.search.replace('?loc=', '')
     if (locations[key]) {
       const initialViewState = {
@@ -71,9 +71,13 @@ export default function H3HexagonMVT () {
     async function fetchData () {
       const response = await fetch(process.env.PUBLIC_URL + '/data.json')
       const data = await response.json()
-      console.log('Jim data', data)
       setDataSolid(data.solid)
       setViewState(data.viewState)
+      const dataIndex = new Map()
+      for (const d of data.solid) {
+        dataIndex.set(d.hex, d)
+      }
+      setDataIndex(dataIndex)
     }
     fetchData()
   }, [setDataSolid, setViewState])
@@ -159,6 +163,8 @@ export default function H3HexagonMVT () {
             <h3>Selected</h3>
             {selectedHex && (
               <>
+                <div>Type: {dataIndex.get(selectedHex[1]).type}</div>
+                <div>Label: {dataIndex.get(selectedHex[1]).label}</div>
                 <div>
                   Hex: {selectedHex[1]} {selectedHex[0]}
                 </div>
@@ -211,9 +217,12 @@ export default function H3HexagonMVT () {
       {location.pathname === '/' && (
         <div style={{ padding: '0.5rem' }}>
           {selectedHex ? (
-            <a href={`https://${selectedHexBase32}.hex.camp`}>
-              {selectedHexBase32}.hex.camp
-            </a>
+            <>
+              {dataIndex.get(selectedHex[1]).type}:
+              <a href={`https://${selectedHexBase32}.hex.camp`}>
+                {dataIndex.get(selectedHex[1]).label}
+              </a>
+            </>
           ) : (
             <span>No hexagon selected.</span>
           )}

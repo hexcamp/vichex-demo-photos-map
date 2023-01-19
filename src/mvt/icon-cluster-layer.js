@@ -33,7 +33,6 @@ export default class IconClusterLayer extends CompositeLayer {
         geometry: {coordinates: props.getPosition(d)},
         properties: d
       }))
-      console.log('Jim3', mappedData)
       index.load(
         props.data.map(d => ({
           geometry: {coordinates: props.getPosition(d)},
@@ -45,7 +44,6 @@ export default class IconClusterLayer extends CompositeLayer {
 
     const z = Math.floor(this.context.viewport.zoom);
     if (rebuildIndex || z !== this.state.z) {
-      console.log('Jim4', this.state.index.getClusters([-180, -85, 180, 85], z))
       this.setState({
         data: this.state.index.getClusters([-180, -85, 180, 85], z),
         z
@@ -77,10 +75,7 @@ export default class IconClusterLayer extends CompositeLayer {
         iconAtlas,
         iconMapping,
         sizeScale,
-        getPosition: d => {
-          console.log('Jim5', d.geometry.coordinates)
-          return d.geometry.coordinates
-        },
+        getPosition: d => d.geometry.coordinates,
         getIcon: d => getIconName(d.properties.cluster ? d.properties.point_count : 1),
         getSize: d => getIconSize(d.properties.cluster ? d.properties.point_count : 1)
       })
