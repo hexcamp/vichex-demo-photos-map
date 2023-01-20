@@ -73,25 +73,17 @@ export default function H3HexagonMVT () {
       const data = await response.json()
       setDataSolid(data.solid)
       setViewState(data.viewState)
-      const dataIndex = new Map()
-      for (const d of data.solid) {
-        dataIndex.set(d.hex, d)
-      }
-      setDataIndex(dataIndex)
+      updateDataIndex(data.solid)
     }
     fetchData()
   }, [setDataSolid, setViewState])
 
-  function getDataAndSetter (layer) {
-    let data
-    let setDataNew
-    if (layer === 'solid') {
-      data = dataSolid
-      setDataNew = setDataSolid
-    } else {
-      throw new Error()
+  function updateDataIndex(data) {
+    const dataIndex = new Map()
+    for (const d of data) {
+      dataIndex.set(d.hex, d)
     }
-    return [data, setDataNew]
+    setDataIndex(dataIndex)
   }
 
   function pushLatLng (lat, lng) {
@@ -103,14 +95,16 @@ export default function H3HexagonMVT () {
       // count: 30 * (9.682 - Math.log((resolution + 1) * 1000)),
       count:
         1000 * (1 / Math.log((resolution + 2) * (resolution + 2)) / 10) - 17.5,
-      colorIndex
+      colorIndex,
+      type: 'No type',
+      label: 'Unlabeled'
     }
     setNextColor(colorIndex + 1)
-    const [data, setDataNew] = getDataAndSetter(dataLayer)
-    const nextData = produce(data, draft => {
+    const nextData = produce(dataSolid, draft => {
       draft.push(newDataPoint)
     })
-    setDataNew(nextData)
+    setDataSolid(nextData)
+    updateDataIndex(nextData)
   }
 
   function pickHex (layer, hex) {
@@ -118,15 +112,15 @@ export default function H3HexagonMVT () {
   }
 
   function removeHex (layer, hexToRemove) {
-    const [data, setDataNew] = getDataAndSetter(layer)
-    const nextData = produce(data, draft => {
+    const nextData = produce(dataSolid, draft => {
       draft.splice(
         0,
         draft.length,
         ...draft.filter(({ hex }) => hex !== hexToRemove)
       )
     })
-    setDataNew(nextData)
+    setDataSolid(nextData)
+    updateDataIndex(nextData)
   }
 
   return (
