@@ -23,13 +23,6 @@
       "label": "Highrock Cairn Park"
     },
     {
-      "hex": "8d28d1af4c0d2ff",
-      "count": 0.963468653442753,
-      "colorIndex": 3,
-      "type": "Zoomable Map",
-      "label": "Victoria Area Photos"
-    },
-    {
       "hex": "8c28d1a0e9b27ff",
       "count": 1.446159084497559,
       "colorIndex": 3,
@@ -42,6 +35,13 @@
       "colorIndex": 1,
       "type": "Photos",
       "label": "Portage Inlet Park"
+    },
+    {
+      "hex": "8c28d1a1b5453ff",
+      "count": 1.446159084497559,
+      "colorIndex": 0,
+      "type": "Photos",
+      "label": "Portage Park"
     }
   ],
   "clear": [],

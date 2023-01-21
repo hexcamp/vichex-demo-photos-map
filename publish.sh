@@ -1,20 +1,20 @@
 #! /bin/bash
 
-HEX=2kgrv5ga2i
-NAME=peerhex-playground-photos-$HEX
-
 set -eo pipefail
 
 . .env
 
+NAME=$PREFIX-$HEX
+
 mkdir -p tmp
 
 npm run build
+DIR=build
 
 echo Adding to IPFS...
 (
 	set +e
-	ipfs add -Q -r --pin=false build > ./tmp/cid.txt
+	ipfs add -Q -r --pin=false $DIR > ./tmp/cid.txt
 	if [ $? != 0 ]; then
 		echo "Retrying... (with 60s sleep)"
 		set -e
@@ -61,6 +61,43 @@ HOSTED_ZONE_ID=Z0776169RPXDLRHZOI9Q
 
 echo Hex: $HEX CID: $CID
 
+if [ ! -f "PUBLISHED" ]; then
+# Create
+JSON="$(cat <<EOF
+    {
+      "Changes": [
+        {
+          "Action": "CREATE",
+          "ResourceRecordSet": {
+            "Name": "$HEX.hex.camp",
+            "Type": "CNAME",
+            "TTL": 300,
+            "ResourceRecords": [
+              {
+                "Value": "pq-pop-ca-1.infra.hex.camp"
+              }
+            ]
+          }
+        },
+        {
+          "Action": "CREATE",
+          "ResourceRecordSet": {
+            "Name": "_dnslink.$HEX.hex.camp",
+            "Type": "TXT",
+            "TTL": 30,
+            "ResourceRecords": [
+              {
+                "Value": "\"dnslink=/ipfs/$CID\""
+              }
+            ]
+          }
+        }
+      ]
+    }
+EOF
+)"
+else
+# Update 
 JSON="$(cat <<EOF
     {
       "Changes": [
@@ -81,9 +118,10 @@ JSON="$(cat <<EOF
     }
 EOF
 )"
-
+fi
 echo $JSON
 aws route53 change-resource-record-sets \
   --hosted-zone-id $HOSTED_ZONE_ID \
   --change-batch "$JSON"
+touch PUBLISHED
 
