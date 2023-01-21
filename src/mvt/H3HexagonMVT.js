@@ -146,6 +146,7 @@ export default function H3HexagonMVT () {
           <H3HexagonView
             dataSolid={dataSolid}
             initialViewState={initialViewState}
+            setInitialViewState={setInitialViewState}
             pushLatLng={pushLatLng}
             pickHex={pickHex}
             setViewState={setViewState}

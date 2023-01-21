@@ -13,6 +13,7 @@ import { H3HexagonLayer, MVTLayer } from '@deck.gl/geo-layers'
 import { h3ToGeo } from 'h3-js'
 import produce from 'immer'
 import DeckGL from '@deck.gl/react'
+import { FlyToInterpolator } from '@deck.gl/core'
 import hexToUrl from './hex-to-url'
 import tokens from '../tokens.json'
 import IconClusterLayer from './icon-cluster-layer';
@@ -110,31 +111,38 @@ export default class H3HexagonView extends Component {
       viewState: { zoom }
     } = this.state
 
-    const layerProps = {
+    const iconClusterLayer = new IconClusterLayer({
+      id: 'icon-cluster',
       data: dataSolid,
       getPosition: d => {
         const latLng = h3ToGeo(d.hex)
         return [latLng[1], latLng[0]]
       },
-      // pickable: true,
+      sizeScale: 40,
+      pickable: true,
       iconAtlas,
-      iconMapping
+      iconMapping,
       // onHover: !hoverInfo.objects && setHoverInfo
-    }
+      onClick: info => {
+        console.log('Jim icon onClick', info)
+        if (info?.object?.hex) {
+          const { hex } = info.object
+          const latLng = h3ToGeo(hex)
+          console.log('Jim icon onClick hex', hex, latLng)
 
-    const iconClusterLayer = new IconClusterLayer({
-      ...layerProps,
-      id: 'icon-cluster',
-      sizeScale: 40
-    })
-
-    const iconLayer = new IconLayer({
-      ...layerProps,
-      id: 'icon',
-      getIcon: d => 'marker',
-      sizeUnits: 'meters',
-      sizeScale: 600,
-      sizeMinPixels: 6
+          const initialViewState = {
+            latitude: latLng[0],
+            longitude: latLng[1],
+            zoom: info.viewport.zoom,
+						pitch: 0,
+						bearing: 0,
+            transitionInterpolator: new FlyToInterpolator(),
+            transitionDuration: 1000,
+          }
+          this.props.setInitialViewState(initialViewState)
+        }
+        return true
+      }
     })
 
     const mvtLayer = new MVTLayer({
