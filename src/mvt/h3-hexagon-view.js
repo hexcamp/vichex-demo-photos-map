@@ -10,7 +10,7 @@ import { color as d3Color } from 'd3-color'
 import throttle from 'lodash.throttle'
 import { IconLayer } from '@deck.gl/layers'
 import { H3HexagonLayer, MVTLayer } from '@deck.gl/geo-layers'
-import { h3ToGeo } from 'h3-js'
+import { h3ToGeo, h3ToGeoBoundary } from 'h3-js'
 import produce from 'immer'
 import DeckGL from '@deck.gl/react'
 import { FlyToInterpolator } from '@deck.gl/core'
@@ -129,7 +129,35 @@ export default class H3HexagonView extends Component {
           const { hex } = info.object
           const latLng = h3ToGeo(hex)
           console.log('Jim icon onClick hex', hex, latLng)
+          const hexBoundary = h3ToGeoBoundary(hex)
+          console.log('Jim icon hexBoundary', hexBoundary)
+          const [minLat, maxLat, minLng, maxLng] = hexBoundary.reduce(
+            ([oldMinLat, oldMaxLat, oldMinLng, oldMaxLng], [lat, lng]) => {
+              const minLat = oldMinLat === null ? lat : Math.min(oldMinLat, lat)
+              const maxLat = oldMaxLat === null ? lat : Math.max(oldMaxLat, lat)
+              const minLng = oldMinLng === null ? lng : Math.min(oldMinLng, lng)
+              const maxLng = oldMaxLng === null ? lng : Math.max(oldMaxLng, lng)
+              return [minLat, maxLat, minLng, maxLng]
+            },
+            [null, null, null, null]
+          )
+          console.log(`Jim minLat=${minLat} maxLat=${maxLat} minLng=${minLng} maxLng=${maxLng}`)
+          const bounds = [[minLng, minLat], [maxLng, maxLat]]
+          const [[west, south], [east, north]] = bounds
+          console.log(`Jim west=${west} south=${south} east=${east} north=${north}`)
+          const newViewport = info.viewport.fitBounds(bounds, { padding: 100 })
+          console.log(`Jim newViewport`, newViewport)
 
+          const initialViewState = {
+            latitude: newViewport.latitude,
+            longitude: newViewport.longitude,
+            zoom: newViewport.zoom,
+						pitch: 0,
+						bearing: 0,
+            transitionInterpolator: new FlyToInterpolator(),
+            transitionDuration: 1000,
+          }
+          /*
           const initialViewState = {
             latitude: latLng[0],
             longitude: latLng[1],
@@ -139,6 +167,7 @@ export default class H3HexagonView extends Component {
             transitionInterpolator: new FlyToInterpolator(),
             transitionDuration: 1000,
           }
+          */
           this.props.setInitialViewState(initialViewState)
         }
         return true
