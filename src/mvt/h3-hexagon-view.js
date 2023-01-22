@@ -124,14 +124,24 @@ export default class H3HexagonView extends Component {
       iconMapping,
       // onHover: !hoverInfo.objects && setHoverInfo
       onClick: info => {
-        console.log('Jim icon onClick', info)
+        let hexes = []
         if (info?.object?.hex) {
-          const { hex } = info.object
-          const latLng = h3ToGeo(hex)
-          console.log('Jim icon onClick hex', hex, latLng)
-          const hexBoundary = h3ToGeoBoundary(hex)
-          console.log('Jim icon hexBoundary', hexBoundary)
-          const [minLat, maxLat, minLng, maxLng] = hexBoundary.reduce(
+          hexes.push(info.object.hex)
+        }
+        if (info?.objects) {
+          for (const object of info.objects) {
+            hexes.push(object.hex)
+          }
+        }
+        if (hexes.length > 0) {
+          let points = []
+          for (const hex of hexes) {
+            const hexBoundary = h3ToGeoBoundary(hex)
+            console.log('Jim icon hex', hex, hexBoundary)
+            points = points.concat(hexBoundary)
+          }
+
+          const [minLat, maxLat, minLng, maxLng] = points.reduce(
             ([oldMinLat, oldMaxLat, oldMinLng, oldMaxLng], [lat, lng]) => {
               const minLat = oldMinLat === null ? lat : Math.min(oldMinLat, lat)
               const maxLat = oldMaxLat === null ? lat : Math.max(oldMaxLat, lat)
@@ -141,12 +151,9 @@ export default class H3HexagonView extends Component {
             },
             [null, null, null, null]
           )
-          console.log(`Jim minLat=${minLat} maxLat=${maxLat} minLng=${minLng} maxLng=${maxLng}`)
           const bounds = [[minLng, minLat], [maxLng, maxLat]]
           const [[west, south], [east, north]] = bounds
-          console.log(`Jim west=${west} south=${south} east=${east} north=${north}`)
           const newViewport = info.viewport.fitBounds(bounds, { padding: 100 })
-          console.log(`Jim newViewport`, newViewport)
 
           const initialViewState = {
             latitude: newViewport.latitude,
@@ -157,17 +164,6 @@ export default class H3HexagonView extends Component {
             transitionInterpolator: new FlyToInterpolator(),
             transitionDuration: 1000,
           }
-          /*
-          const initialViewState = {
-            latitude: latLng[0],
-            longitude: latLng[1],
-            zoom: info.viewport.zoom,
-						pitch: 0,
-						bearing: 0,
-            transitionInterpolator: new FlyToInterpolator(),
-            transitionDuration: 1000,
-          }
-          */
           this.props.setInitialViewState(initialViewState)
         }
         return true
