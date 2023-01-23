@@ -30,7 +30,6 @@ export default function H3HexagonMVT () {
     minZoom: 1
   })
   const [viewState, setViewState] = useState({})
-  const dataLayer = 'solid'
   const [selectedHex, setSelectedHex] = useState()
   const selectedHexBase32 = useMemo(
     () => (selectedHex ? hexToUrl(selectedHex[1]) : ''),
@@ -151,6 +150,7 @@ export default function H3HexagonMVT () {
             pickHex={pickHex}
             setViewState={setViewState}
             selectedHex={selectedHex}
+            setSelectedHex={setSelectedHex}
           />
         </div>
         {location.pathname === '/edit' && (

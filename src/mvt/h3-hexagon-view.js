@@ -127,6 +127,9 @@ export default class H3HexagonView extends Component {
         let hexes = []
         if (info?.object?.hex) {
           hexes.push(info.object.hex)
+          setTimeout(() => {
+            this.props.pickHex('solid', info.object.hex)
+          }, 1000)
         }
         if (info?.objects) {
           for (const object of info.objects) {
@@ -152,7 +155,6 @@ export default class H3HexagonView extends Component {
             [null, null, null, null]
           )
           const bounds = [[minLng, minLat], [maxLng, maxLat]]
-          const [[west, south], [east, north]] = bounds
           const newViewport = info.viewport.fitBounds(bounds, { padding: 100 })
 
           const initialViewState = {
@@ -295,6 +297,10 @@ export default class H3HexagonView extends Component {
           controller={true}
           onClick={this.onClick.bind(this)}
           views={new MapView({ repeat: true })}
+          onViewStateChange={() => {
+            this._setTooltip()
+            setTimeout(() => this.props.setSelectedHex(), 0)
+          }}
         >
           {({ viewState }) => (
             <UpdateViewState
