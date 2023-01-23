@@ -140,7 +140,6 @@ export default class H3HexagonView extends Component {
           let points = []
           for (const hex of hexes) {
             const hexBoundary = h3ToGeoBoundary(hex)
-            console.log('Jim icon hex', hex, hexBoundary)
             points = points.concat(hexBoundary)
           }
 

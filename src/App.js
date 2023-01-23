@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   createHashRouter,
   RouterProvider,
@@ -16,39 +16,47 @@ const StyledItem = styled.li`
   margin: 0 0.5rem;
 `
 
-const router = createHashRouter([
-  {
-    path: '/',
-    element: (
-      <div>
-        <nav>
-          <StyledList>
-            <StyledItem>
-              <NavLink to='/'>Home</NavLink>
-            </StyledItem>
-            <StyledItem>
-              <NavLink to='/edit'>Edit</NavLink>
-            </StyledItem>
-          </StyledList>
-        </nav>
-        <>
-          <Outlet />
-        </>
-      </div>
-    ),
-    children: [
-      {
-        path: '/',
-        element: <MVTExample />
-      },
-      {
-        path: 'edit',
-        element: <MVTExample />
-      }
-    ]
-  }
-])
+const router = (homeLinkCounter, setHomeLinkCounter) =>
+  createHashRouter([
+    {
+      path: '/',
+      element: (
+        <div>
+          <nav>
+            <StyledList>
+              <StyledItem>
+                <NavLink
+                  to='/'
+                  onClick={() => setHomeLinkCounter(homeLinkCounter + 1)}
+                >
+                  Home
+                </NavLink>
+              </StyledItem>
+              <StyledItem>
+                <NavLink to='/edit'>Edit</NavLink>
+              </StyledItem>
+            </StyledList>
+          </nav>
+          <>
+            <Outlet />
+          </>
+        </div>
+      ),
+      children: [
+        {
+          path: '/',
+          element: <MVTExample homeLinkCounter={homeLinkCounter} />
+        },
+        {
+          path: 'edit',
+          element: <MVTExample />
+        }
+      ]
+    }
+  ])
 
 export default function App () {
-  return <RouterProvider router={router} />
+  const [homeLinkCounter, setHomeLinkCounter] = useState(0)
+
+  return <RouterProvider router={router(homeLinkCounter, setHomeLinkCounter)} />
 }

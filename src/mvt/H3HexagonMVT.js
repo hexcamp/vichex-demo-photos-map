@@ -18,7 +18,7 @@ const secretHex =
   '105471fbca3674e6b45709a56381891e133618ada169e52496907d461be55760' +
   '02998949f060111889810320f8ff4f57b58734c187896ecf4daa44baeba9553f'
 
-export default function H3HexagonMVT () {
+export default function H3HexagonMVT ({ homeLinkCounter }) {
   const [resolution, setResolution] = useState(7)
   const [dataSolid, setDataSolid] = useState([])
   const [dataIndex, setDataIndex] = useState(new Map())
@@ -65,6 +65,20 @@ export default function H3HexagonMVT () {
       setInitialViewState(initialViewState)
     }
   }, [location])
+
+  useEffect(() => {
+    const initialViewState = {
+      ...locations.yyj,
+      transitionInterpolator: new FlyToInterpolator({
+        speed: 1.5
+      }),
+      transitionDuration: 'auto',
+      maxZoom: 20,
+      minZoom: 1
+    }
+    setInitialViewState(initialViewState)
+  }, [homeLinkCounter])
+
   const [listeners, dispatchListenersAction] = useReducer(listenersReducer, {})
   useEffect(() => {
     async function fetchData () {
@@ -77,7 +91,7 @@ export default function H3HexagonMVT () {
     fetchData()
   }, [setDataSolid, setViewState])
 
-  function updateDataIndex(data) {
+  function updateDataIndex (data) {
     const dataIndex = new Map()
     for (const d of data) {
       dataIndex.set(d.hex, d)
