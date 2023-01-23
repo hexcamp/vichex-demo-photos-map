@@ -16,7 +16,7 @@ import DeckGL from '@deck.gl/react'
 import { FlyToInterpolator } from '@deck.gl/core'
 import hexToUrl from './hex-to-url'
 import tokens from '../tokens.json'
-import IconClusterLayer from './icon-cluster-layer';
+import IconClusterLayer from './icon-cluster-layer'
 
 // Set your mapbox token here
 // const MAPBOX_TOKEN = localStorage.getItem('mapbox_token')
@@ -153,17 +153,20 @@ export default class H3HexagonView extends Component {
             },
             [null, null, null, null]
           )
-          const bounds = [[minLng, minLat], [maxLng, maxLat]]
+          const bounds = [
+            [minLng, minLat],
+            [maxLng, maxLat]
+          ]
           const newViewport = info.viewport.fitBounds(bounds, { padding: 100 })
 
           const initialViewState = {
             latitude: newViewport.latitude,
             longitude: newViewport.longitude,
             zoom: newViewport.zoom,
-						pitch: 0,
-						bearing: 0,
+            pitch: 0,
+            bearing: 0,
             transitionInterpolator: new FlyToInterpolator(),
-            transitionDuration: 1000,
+            transitionDuration: 1000
           }
           this.props.setInitialViewState(initialViewState)
         }
@@ -300,6 +303,7 @@ export default class H3HexagonView extends Component {
             this._setTooltip()
             setTimeout(() => this.props.setSelectedHex(), 0)
           }}
+          getCursor={({ isHovering }) => (isHovering ? 'pointer' : 'grab')}
         >
           {({ viewState }) => (
             <UpdateViewState
