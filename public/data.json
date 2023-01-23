@@ -42,6 +42,13 @@
       "colorIndex": 0,
       "type": "Photos",
       "label": "Portage Park"
+    },
+    {
+      "hex": "8d28d1aaac56a3f",
+      "count": 0.963468653442753,
+      "colorIndex": 2,
+      "type": "Photos",
+      "label": "Mount Tolmie"
     }
   ],
   "clear": [],
