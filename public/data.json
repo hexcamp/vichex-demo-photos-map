@@ -63,6 +63,13 @@
       "colorIndex": 1,
       "type": "Photos",
       "label": "Craigflower Manor"
+    },
+    {
+      "hex": "8d28d1af464407f",
+      "count": 0.963468653442753,
+      "colorIndex": 0,
+      "type": "Photos",
+      "label": "Knockan Hill Park"
     }
   ],
   "clear": [],
