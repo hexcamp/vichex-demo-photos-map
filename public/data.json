@@ -49,6 +49,13 @@
       "colorIndex": 2,
       "type": "Photos",
       "label": "Mount Tolmie"
+    },
+    {
+      "hex": "8e28d1aad3b2a2f",
+      "count": 0.5336880111120408,
+      "colorIndex": 0,
+      "type": "Photos",
+      "label": "Banfield Park"
     }
   ],
   "clear": [],
