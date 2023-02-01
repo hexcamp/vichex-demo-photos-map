@@ -56,6 +56,13 @@
       "colorIndex": 0,
       "type": "Photos",
       "label": "Banfield Park"
+    },
+    {
+      "hex": "8d28d1a1b59ad7f",
+      "count": 0.963468653442753,
+      "colorIndex": 1,
+      "type": "Photos",
+      "label": "Craigflower Manor"
     }
   ],
   "clear": [],
