@@ -18,6 +18,7 @@ export default function ({ flatten }) {
       <StyledA href={genUrl('jfk')}>JFK</StyledA>
       <StyledA href={genUrl('bom')}>BOM</StyledA>
       <StyledA href={genUrl('tfn')}>TFN</StyledA>
+      <StyledA href={genUrl('oka')}>OKA</StyledA>
       <StyledA href={base} onClick={flatten}>
         Flat
       </StyledA>

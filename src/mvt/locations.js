@@ -54,6 +54,13 @@ const locations = {
     zoom: 8.249584835501196,
     bearing: 0,
     pitch: 0
+  },
+  oka: {
+    latitude: 26.353971819322837,
+    longitude: 127.91681805224076,
+    zoom: 8.249584835501196,
+    bearing: 0,
+    pitch: 0
   }
 }
 
