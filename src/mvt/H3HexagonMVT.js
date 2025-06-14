@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useReducer, useMemo } from 'react'
 import { FlyToInterpolator } from '@deck.gl/core'
-import { geoToH3 } from 'h3-js'
+import { latLngToCell } from 'h3-js'
 import produce from 'immer'
 import { useLocation } from 'react-router-dom'
 import hexToUrl from './hex-to-url'
@@ -8,9 +8,6 @@ import locations from './locations'
 import H3HexagonView from './h3-hexagon-view'
 import ResolutionSelect from './resolution-select'
 import LocationPicker from './location-picker'
-import getPeerIdFromH3HexAndSecret from './deterministic-peer-id'
-import WebRTCPanel from './webrtc-panel'
-import listenersReducer from './listeners-reducer'
 
 // var array = new Uint8Array(64); crypto.getRandomValues(array)
 // Array.from(array).map(b => b.toString(16).padStart(2, "0")).join('')
@@ -35,20 +32,6 @@ export default function H3HexagonMVT ({ homeLinkCounter }) {
     () => (selectedHex ? hexToUrl(selectedHex[1]) : ''),
     [selectedHex]
   )
-  const [peerId, setPeerId] = useState()
-  useEffect(() => {
-    setPeerId(null)
-    if (selectedHex) {
-      async function run () {
-        const peerId = await getPeerIdFromH3HexAndSecret(
-          selectedHex[1],
-          secretHex
-        )
-        setPeerId(peerId)
-      }
-      run()
-    }
-  }, [selectedHex])
 
   useEffect(() => {
     const key = location.search.replace('?loc=', '')
@@ -79,7 +62,6 @@ export default function H3HexagonMVT ({ homeLinkCounter }) {
     setInitialViewState(initialViewState)
   }, [homeLinkCounter])
 
-  const [listeners, dispatchListenersAction] = useReducer(listenersReducer, {})
   useEffect(() => {
     async function fetchData () {
       const response = await fetch(process.env.PUBLIC_URL + '/data.json')
@@ -101,7 +83,7 @@ export default function H3HexagonMVT ({ homeLinkCounter }) {
 
   function pushLatLng (lat, lng) {
     if (location.pathname !== '/edit') return
-    const hex = geoToH3(lat, lng, resolution)
+    const hex = latLngToCell(lat, lng, resolution)
     const colorIndex = nextColor % 10
     const newDataPoint = {
       hex,
@@ -184,9 +166,6 @@ export default function H3HexagonMVT ({ homeLinkCounter }) {
                     {selectedHexBase32}.vichex.ca
                   </a>
                 </div>
-                <div style={{ fontSize: 'small' }}>
-                  PeerID: {peerId && peerId.toB58String()}
-                </div>
                 <div>
                   <button
                     onClick={() => {
@@ -198,13 +177,6 @@ export default function H3HexagonMVT ({ homeLinkCounter }) {
                   </button>
                   <button onClick={() => setSelectedHex(null)}>Deselect</button>
                 </div>
-                {peerId && (
-                  <WebRTCPanel
-                    peerId={peerId}
-                    listeners={listeners}
-                    dispatchListenersAction={dispatchListenersAction}
-                  />
-                )}
               </>
             )}
             <h3>Data</h3>
