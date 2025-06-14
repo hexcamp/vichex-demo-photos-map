@@ -18,8 +18,8 @@ import hexToUrl from './hex-to-url'
 import tokens from '../tokens.json'
 import IconClusterLayer from './icon-cluster-layer'
 
-import { Map } from 'react-map-gl/mapbox';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { Map } from 'react-map-gl/maplibre'
+import 'maplibre-gl/dist/maplibre-gl.css'
 
 // Set your mapbox token here
 // const MAPBOX_TOKEN = localStorage.getItem('mapbox_token')
@@ -215,7 +215,7 @@ export default class H3HexagonView extends Component {
       elevationScale: zoom ? 5.0 + 30.0 * (10.0 / zoom) : 5,
       getHexagon: d => d.hex,
       // getFillColor: d => {
-      getLineWidth: 3,
+      getLineWidth: 0,
       getFillColor: d => {
         if (
           selectedHex &&
@@ -288,6 +288,8 @@ export default class H3HexagonView extends Component {
   }
 
   render() {
+    // https://github.com/CartoDB/basemap-styles/blob/master/mapboxgl/voyager.json
+    // https://github.com/CartoDB/basemap-styles
     return (
       <>
         <div
@@ -311,10 +313,8 @@ export default class H3HexagonView extends Component {
           }}
           getCursor={({ isHovering }) => (isHovering ? 'pointer' : 'grab')}
         >
-          <Map
-            mapStyle="mapbox://styles/mapbox/light-v9"
-            mapboxAccessToken={MAPBOX_TOKEN}
-          />
+          {false && <Map mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json" />}
+          <Map mapStyle="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json" />
 
           {({ viewState }) => (
             <UpdateViewState
