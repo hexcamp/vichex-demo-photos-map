@@ -15,7 +15,6 @@ import produce from 'immer'
 import { DeckGL } from '@deck.gl/react'
 import { FlyToInterpolator } from '@deck.gl/core'
 import hexToUrl from './hex-to-url'
-import tokens from '../tokens.json'
 import IconClusterLayer from './icon-cluster-layer'
 
 import { Map } from 'react-map-gl/maplibre'
@@ -23,7 +22,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 
 // Set your mapbox token here
 // const MAPBOX_TOKEN = localStorage.getItem('mapbox_token')
-const MAPBOX_TOKEN = tokens.mapbox
+// const MAPBOX_TOKEN = tokens.mapbox
 const iconMapping = process.env.PUBLIC_URL + '/location-icon-mapping.json'
 const iconAtlas = process.env.PUBLIC_URL + '/location-icon-atlas.png'
 
