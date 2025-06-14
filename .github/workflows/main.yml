@@ -31,7 +31,7 @@ jobs:
         name: Deploy to Storacha and IPFS Cluster
         id: deploy
         with:
-          path-to-deploy: public
+          path-to-deploy: publish
           storacha-key: ${{ secrets.STORACHA_KEY }}
           storacha-proof: ${{ secrets.STORACHA_PROOF }}
           cluster-url: ${{ secrets.CLUSTER_URL }}
