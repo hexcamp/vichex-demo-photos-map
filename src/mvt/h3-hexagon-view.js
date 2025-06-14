@@ -314,7 +314,9 @@ export default class H3HexagonView extends Component {
           {false && <Map mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json" />}
           {false && <Map mapStyle="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json" />}
           {false && <Map mapStyle="https://raw.githubusercontent.com/pnorman/tilekiln-shortbread-demo/refs/heads/main/colorful.json" />}
-          <Map mapStyle="colorful.json" />
+          {false && <Map mapStyle="colorful.json" />}
+          {false && <Map mapStyle="colorful-local-proxy.json" />}
+          <Map mapStyle="colorful-vichex.json" />
 
           {({ viewState }) => (
             <UpdateViewState
