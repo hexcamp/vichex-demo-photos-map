@@ -180,8 +180,8 @@ export default function H3HexagonMVT ({ homeLinkCounter }) {
                 <div>Base32: {selectedHexBase32}</div>
                 <div>
                   Hex.Camp URL:{' '}
-                  <a href={`https://${selectedHexBase32}.hex.camp`}>
-                    {selectedHexBase32}.hex.camp
+                  <a href={`https://${selectedHexBase32}.vichex.ca`}>
+                    {selectedHexBase32}.vichex.ca
                   </a>
                 </div>
                 <div style={{ fontSize: 'small' }}>
@@ -228,7 +228,7 @@ export default function H3HexagonMVT ({ homeLinkCounter }) {
           {selectedHex ? (
             <>
               {dataIndex.get(selectedHex[1]).type}:
-              <a href={`https://${selectedHexBase32}.hex.camp`}>
+              <a href={`https://${selectedHexBase32}.vichex.ca`}>
                 {dataIndex.get(selectedHex[1]).label}
               </a>
             </>

@@ -4,6 +4,8 @@ set -eo pipefail
 
 . .env
 
+export AWS_PROFILE=default
+
 NAME=$PREFIX-$HEX
 
 mkdir -p tmp
