@@ -1,11 +1,11 @@
 import base32 from 'base32.js'
 import { Buffer } from 'buffer'
 
-export default function (h3Index) {
+export default function hexToUrl (h3Index) {
   if (!h3Index) return ''
   let trimmed = h3Index.replace(/f*$/, '')
   if (trimmed[0] !== '8') return 'Error'
-  if (trimmed.length % 2 == 0) {
+  if (trimmed.length % 2 === 0) {
     trimmed += 'f'
   }
   const buf = Buffer.from(trimmed.slice(1), 'hex')

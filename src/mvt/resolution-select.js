@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function ({ resolution, setResolution }) {
+export default function resolutionSelect ({ resolution, setResolution }) {
   function handleChange (event) {
     setResolution(Number(event.target.value))
   }

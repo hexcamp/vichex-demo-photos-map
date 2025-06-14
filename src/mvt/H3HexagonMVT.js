@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { FlyToInterpolator } from '@deck.gl/core'
 import { latLngToCell } from 'h3-js'
 import produce from 'immer'
@@ -11,9 +11,6 @@ import LocationPicker from './location-picker'
 
 // var array = new Uint8Array(64); crypto.getRandomValues(array)
 // Array.from(array).map(b => b.toString(16).padStart(2, "0")).join('')
-const secretHex =
-  '105471fbca3674e6b45709a56381891e133618ada169e52496907d461be55760' +
-  '02998949f060111889810320f8ff4f57b58734c187896ecf4daa44baeba9553f'
 
 export default function H3HexagonMVT ({ homeLinkCounter }) {
   const [resolution, setResolution] = useState(13)

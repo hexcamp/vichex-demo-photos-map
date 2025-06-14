@@ -5,7 +5,7 @@ const StyledA = styled.a`
   margin-left: 0.3rem;
 `
 
-export default function ({ flatten }) {
+export default function locationPicker ({ flatten }) {
   const base = document.location.href.replace(/\?.*/, '')
   const genUrl = airportCode => base + '?loc=' + airportCode
   return (
