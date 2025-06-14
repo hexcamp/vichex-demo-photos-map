@@ -102,7 +102,7 @@ export default class H3HexagonView extends Component {
       el.style.display = 'block'
       el.style.left = x + 10 + 'px'
       el.style.top = y + 10 + 'px'
-      el.style.color = '#fff'
+      el.style.color = '#000'
     } else {
       el.style.display = 'none'
     }
@@ -314,7 +314,8 @@ export default class H3HexagonView extends Component {
           getCursor={({ isHovering }) => (isHovering ? 'pointer' : 'grab')}
         >
           {false && <Map mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json" />}
-          <Map mapStyle="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json" />
+          {false && <Map mapStyle="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json" />}
+          <Map mapStyle="https://raw.githubusercontent.com/pnorman/tilekiln-shortbread-demo/refs/heads/main/colorful.json" />
 
           {({ viewState }) => (
             <UpdateViewState
