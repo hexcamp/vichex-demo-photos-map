@@ -12,11 +12,14 @@ import { IconLayer } from '@deck.gl/layers'
 import { H3HexagonLayer, MVTLayer } from '@deck.gl/geo-layers'
 import { cellToLatLng, cellToBoundary } from 'h3-js'
 import produce from 'immer'
-import DeckGL from '@deck.gl/react'
+import { DeckGL } from '@deck.gl/react'
 import { FlyToInterpolator } from '@deck.gl/core'
 import hexToUrl from './hex-to-url'
 import tokens from '../tokens.json'
 import IconClusterLayer from './icon-cluster-layer'
+
+import { Map } from 'react-map-gl/mapbox';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 // Set your mapbox token here
 // const MAPBOX_TOKEN = localStorage.getItem('mapbox_token')
@@ -70,7 +73,7 @@ const colors = schemeCategory10.map(colorName => {
 
 const elevationScale = { min: 1, max: 50 }
 
-function UpdateViewState ({ updateViewState, viewState }) {
+function UpdateViewState({ updateViewState, viewState }) {
   useEffect(() => {
     updateViewState(viewState)
   }, [updateViewState, viewState])
@@ -78,11 +81,11 @@ function UpdateViewState ({ updateViewState, viewState }) {
 }
 
 export default class H3HexagonView extends Component {
-  static get defaultColorRange () {
+  static get defaultColorRange() {
     return colorRange
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.updateViewState = throttle(this._updateViewState.bind(this), 1000)
     this.tooltipRef = React.createRef()
@@ -92,7 +95,7 @@ export default class H3HexagonView extends Component {
     }
   }
 
-  _setTooltip (message, x, y) {
+  _setTooltip(message, x, y) {
     const el = this.tooltipRef.current
     if (message) {
       el.innerHTML = message
@@ -105,7 +108,7 @@ export default class H3HexagonView extends Component {
     }
   }
 
-  _renderLayers () {
+  _renderLayers() {
     const { dataSolid, pickHex, selectedHex } = this.props
     const {
       viewState: { zoom }
@@ -174,6 +177,7 @@ export default class H3HexagonView extends Component {
       }
     })
 
+    /*
     const mvtLayer = new MVTLayer({
       data: `https://a.tiles.mapbox.com/v4/mapbox.mapbox-streets-v7/{z}/{x}/{y}.vector.pbf?access_token=${MAPBOX_TOKEN}`,
       // data: `http://localhost:5000/satellite-lowres/{z}/{x}/{y}.pbf`,
@@ -196,6 +200,7 @@ export default class H3HexagonView extends Component {
       getLineWidth: 1,
       lineWidthMinPixels: 1
     })
+    */
 
     const hexLayer = new H3HexagonLayer({
       id: 'h3-hexagon-layer-solid',
@@ -266,10 +271,11 @@ export default class H3HexagonView extends Component {
     })
 
     // return [mvtLayer, hexLayer, iconLayer]
-    return [mvtLayer, hexLayer, iconClusterLayer]
+    // return [mvtLayer, hexLayer, iconClusterLayer]
+    return [hexLayer, iconClusterLayer]
   }
 
-  _updateViewState (viewState) {
+  _updateViewState(viewState) {
     const nextViewState = produce(this.state.viewState, draft => {
       for (const key in viewState) {
         draft[key] = viewState[key]
@@ -281,7 +287,7 @@ export default class H3HexagonView extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <>
         <div
@@ -305,6 +311,11 @@ export default class H3HexagonView extends Component {
           }}
           getCursor={({ isHovering }) => (isHovering ? 'pointer' : 'grab')}
         >
+          <Map
+            mapStyle="mapbox://styles/mapbox/light-v9"
+            mapboxAccessToken={MAPBOX_TOKEN}
+          />
+
           {({ viewState }) => (
             <UpdateViewState
               updateViewState={this.updateViewState}
@@ -316,7 +327,7 @@ export default class H3HexagonView extends Component {
     )
   }
 
-  onClick (info) {
+  onClick(info) {
     const {
       coordinate: [lng, lat]
     } = info
